@@ -1,0 +1,146 @@
+{% block body %}
+    {% load static %}
+    <html lang="en">
+
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--    <title></title>-->
+    <link rel="icon" href="{% static '/images/logo_symbol.png' %}" type="image/ico" />
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style4.css' %}">
+
+    <!-- Font Awesome JS -->
+    <script defer src="{% static 'js/solid.js' %}" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="{% static 'js/fontawesome.js' %}" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <title>{% block title %}Search Flights{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="{% static 'js/3.4.1/jquery.min.js' %}"></script>
+        <script src="{% static 'js/3.4.1/bootstrap.min.js' %}"></script>
+
+        <style>
+            .column {
+                float: left;
+                width: 20%;
+            }
+
+            /* Clear floats after the columns */
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            #execution_report {
+                background: none !important;
+                border: none;
+                padding: 0 !important;
+                /*optional*/
+                font-family: arial, sans-serif;
+                /*input has OS specific font-family*/
+                color: #069;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            select {
+                width: 120px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+    <div class="container">
+        
+        <div class="card">
+            <h4 class="card-header">Flight Search</h4>
+            <div class="card-body">
+                <form action="/api/flight-plan" method="GET" id="create_product" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <span style='color:green'>{{ msg }}</span>
+                    <span style='color:red'>{{ error }}</span>
+
+                    <div class="row">
+                        
+                        <div class="column col-md-3 required">
+                            <label for="departure">Departure City</label>
+                            <input type="text" style="width:100%" class="form-control" value=""
+                                   id="departure" name="departure" maxlength="20" onchange="find_seq()">
+                        </div>
+                        <div class="column col-md-3 required">
+                            <label for="destination">Destination City</label>
+                            <input type="text" style="width:100%" class="form-control" value=""
+                                   id="destination" name="destination" maxlength="20" onchange="find_seq()">
+                        </div>
+                        <div class="column col-md-3 required">
+                            <label for="departure_t">Departure Time</label>
+                            <input type="datetime-local" style="width:100%" class="form-control" value=""
+                                   id="departure_t" name="departure_t" maxlength="20" onchange="find_seq()">
+                        </div>
+                    
+                        <!-- Select next stage-->
+                        
+
+
+                    </div>
+                    <br>
+                        <div class="row">
+                    
+                            <div class="column col-md-3">
+                                
+                            </div>
+                            <div class="column col-md-3">
+                                <button type="submit" class="btn btn-primary btn-block">Search</button>
+                            </div>
+                        </div>
+                    
+                    
+
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% if Response %}
+    
+    <div class="container pt-4">
+        <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+            <th>Sr.no</th>
+            <th>ID</th>
+            <th>Departure City</th>
+            <th>Arrival City</th>
+            <th>Departure Time</th>
+            </thead>
+        
+            <tbody>
+            {% for i in Response %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        {{i.id}}
+                    </td>
+                    <td>
+                        {{ i.departure_city }}
+                    </td>
+                    <td>{{ i.arrival_city }}</td>
+                    <td>{{ i.departure_time|date:"Y-m-d H:i:s"  }} {{ i.departure_time}}</td>
+
+                   
+                </tr>
+            {% endfor %}
+            </tbody>
+        
+        </table>
+    </div>
+    {% endif %}
+    </body>
+    </html>
+{%endblock%}
