@@ -1,5 +1,19 @@
 from rest_framework import serializers
-from .models import FlightDetails , City
+from .models import FlightDetails , City , Passenger
+
+class PassengerSerializer(serializers.ModelSerializer):
+	passenger_name = serializers.CharField(max_length=100, required=True, allow_blank=False, allow_null=False)
+	passenger_passport_id = serializers.CharField(max_length=10, required=True, allow_blank=False, allow_null=False)
+	passenger_gender = serializers.CharField(max_length=2, required=True, allow_blank=False, allow_null=False,)
+	passenger_contact = serializers.CharField(max_length=100, required=True, allow_blank=False, allow_null=False)
+
+    def to_representation(self, instance):
+        
+        return instance.passenger_name + "_" + instance.passenger_passport_id
+    
+    def create(self, validated_data):
+        details_instance = Passenger.objects.create(**validated_data)
+        return details_instance
 
 class FlightDetailsSerializer(serializers.ModelSerializer):
     number = serializers.CharField(max_length=100, required=True, allow_blank=False, allow_null=False)
