@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from rest_framework.views import APIView
 from .serializer import FlightDetailsSerializer
-from .models import FlightDetails , City
+from .models import FlightDetails , City , Passenger
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 
@@ -27,7 +27,7 @@ class Update(APIView):
 class FlightPlan(APIView):
     renderer_classes = [TemplateHTMLRenderer]
 
-    def get(self,request):
+	def get(self,request):        
         print(request.query_params)
         dep_city = request.query_params.get("departure")
         departure_time = request.query_params.get("departure_t")
@@ -35,7 +35,7 @@ class FlightPlan(APIView):
         print(dep_city)
         dep_c_ins = City.objects.get_or_create(name=dep_city)
         arr_c_ins = City.objects.get_or_create(name=arrival_city)
-        print(dep_c_ins)
+        print(dep_c_ins)        
         print(departure_time)
         result = []
         flight_option = FlightDetails.objects.filter(departure_city = dep_c_ins[0] , departure_time=departure_time , arrival_city=arr_c_ins[0]).first()
@@ -70,4 +70,20 @@ class FindPlan(APIView):
     
     def get(self,request):
         return Response({})
+
+def AddPassenger(APIView):
+    def post(self,request):
+        passenger_name = request.data.get("passenger_name")
+        passenger_passport_id = request.data.get("passenger_passport_id")
+        passneger_gender = request.data.ger("passenger_gender")
+        passenger_contanct = request.data.ger("passenger_conatact")
+        try:
+            passenger = Passenger.objects.get(passenger_passport_id=passenger_passport_id)
+            serializer = PassengerSerializer(passenger)
+            return JsonResponse(serializer.validated_data)
+        except:
+            serializer = PassengerSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.create()
+                return JsonResponse(serializer.validated_data)
         
